@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AddCardScreen extends StatefulWidget {
-  static const routeName = '/add_cart';
-
-  const AddCardScreen({Key? key}) : super(key: key);
+  static const routeName = 'add_card';
+  final int id;
+  const AddCardScreen({Key? key, required this.id}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => AddCardScreenState();
@@ -20,14 +20,20 @@ class AddCardScreenState extends State<AddCardScreen> {
     TextEditingController(),
     TextEditingController()
   ];
+  TodoModel detail = TodoModel(id: 0);
+
+  @override
+  void initState() {
+    detail = Provider.of<UserProvider>(context, listen: false).dataDetail;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    TodoModel detail =
-        Provider.of<UserProvider>(context, listen: false).dataDetail;
     if (detail.id != 0) {
       controllers[0].text = detail.title!;
-      controllers[1].text = detail.startDate!.toIso8601String();
-      controllers[2].text = detail.endDate!.toIso8601String();
+      controllers[1].text = formatDate(detail.startDate!);
+      controllers[2].text = formatDate(detail.endDate!);
     }
 
     return Scaffold(

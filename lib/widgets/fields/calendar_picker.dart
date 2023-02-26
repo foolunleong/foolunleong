@@ -1,7 +1,14 @@
 import 'package:etiqa/providers/user_provider.dart';
 import 'package:etiqa/widgets/fields/field_text.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
+String formatDate(DateTime val) {
+  DateFormat formatter = DateFormat('dd MMM yyyy');
+  String outputDate = formatter.format(val);
+  return outputDate;
+}
 
 Widget etiqaTextDateFloat(
   BuildContext context, {

@@ -1,15 +1,8 @@
-import 'package:etiqa/features/add_card/add_cart.dart';
 import 'package:etiqa/models/data_model.dart';
 import 'package:etiqa/providers/user_provider.dart';
+import 'package:etiqa/widgets/fields/calendar_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
-String formatDate(DateTime val) {
-  DateFormat formatter = DateFormat('dd MMM yyyy');
-  String outputDate = formatter.format(val);
-  return outputDate;
-}
 
 String calTotalClock(DateTime startTime, DateTime endTime) {
   startTime = DateTime.now();
@@ -28,16 +21,24 @@ String calTotalClock(DateTime startTime, DateTime endTime) {
       : '${days.toString().replaceAll('-', '')} day $hours hr $minuts min';
 }
 
-class LandingScreen extends StatefulWidget {
-  static const routeName = '/home';
+class HomeScreen extends StatefulWidget {
+  static const routeName = 'home';
 
-  const LandingScreen({Key? key}) : super(key: key);
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => LandingScreenState();
+  State<StatefulWidget> createState() => HomeScreenState();
 }
 
-class LandingScreenState extends State<LandingScreen> {
+class HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    UserProvider provider = Provider.of<UserProvider>(context, listen: false);
+    provider.datas.clear();
+    provider.datas.addAll(dataTodo);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,6 +54,7 @@ class LandingScreenState extends State<LandingScreen> {
           child: Consumer<UserProvider>(builder: (context, val, child) {
         return SingleChildScrollView(
           child: ListView.builder(
+              key: const Key('list_card'),
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: val.datas.length,
@@ -71,8 +73,9 @@ class LandingScreenState extends State<LandingScreen> {
 
   Widget detailCard(TodoModel data, UserProvider val) {
     return InkWell(
+      key: const Key('openDetail'),
       onTap: () => Provider.of<UserProvider>(context, listen: false)
-          .openDetail(context, data.id!),
+          .openDetail(context, data.id ?? 0),
       child: Card(
         margin: const EdgeInsets.all(20.0),
         child: Column(

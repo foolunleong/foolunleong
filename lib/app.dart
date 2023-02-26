@@ -1,10 +1,10 @@
-import 'package:etiqa/settings/routes.dart';
+import 'package:etiqa/features/home/home.dart';
 import 'package:etiqa/settings/settings_controller.dart';
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 
 class MyApp extends StatelessWidget {
-  final SettingsController settingsController;
-  const MyApp({Key? key, required this.settingsController}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,14 +13,15 @@ class MyApp extends StatelessWidget {
       restorationScopeId: 'app',
       debugShowCheckedModeBanner: false,
       scrollBehavior: MyCustomScrollBehavior(),
-      onGenerateRoute: (RouteSettings routeSettings) {
-        return PageRouteBuilder(
-            settings: routeSettings,
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                routeHandler(routeSettings.name!, settingsController),
-            transitionsBuilder: (_, a, __, c) => FadeTransition(
-                  opacity: a,
-                  child: c,
+      initialRoute: HomeScreen.routeName,
+      onGenerateRoute: (settings) => FluroRouter.appRouter
+          .matchRoute(context, settings.name, routeSettings: settings)
+          .route,
+      onUnknownRoute: (RouteSettings settings) {
+        return MaterialPageRoute<void>(
+            settings: settings,
+            builder: (BuildContext context) => const Scaffold(
+                  body: Text('Not Found'),
                 ));
       },
     );

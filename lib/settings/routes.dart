@@ -1,13 +1,36 @@
-import 'package:etiqa/features/add_card/add_cart.dart';
+import 'package:etiqa/features/detail/detail.dart';
 import 'package:etiqa/features/home/home.dart';
-import 'package:etiqa/settings/settings_controller.dart';
-import 'package:flutter/material.dart';
+import 'package:fluro/fluro.dart';
 
-Widget routeHandler(String route, SettingsController controller) =>
-    routeName(controller)[route]!;
+int transitionDuration = 300;
+TransitionType transitionType = TransitionType.fadeIn;
 
-Map<String, Widget> routeName(SettingsController controller) => {
-      '/': const LandingScreen(),
-      AddCardScreen.routeName: const AddCardScreen(),
-      LandingScreen.routeName: const LandingScreen()
-    };
+void buildFluro() {
+  FluroRouter.appRouter
+    ..define(
+      '/',
+      transitionType: transitionType,
+      transitionDuration: Duration(milliseconds: transitionDuration),
+      handler: Handler(handlerFunc: (context, params) => const HomeScreen()),
+    )
+    ..define(
+      HomeScreen.routeName,
+      transitionType: transitionType,
+      transitionDuration: Duration(milliseconds: transitionDuration),
+      handler: Handler(handlerFunc: (context, params) => const HomeScreen()),
+    )
+    ..define(
+      AddCardScreen.routeName,
+      transitionType: TransitionType.inFromRight,
+      transitionDuration: Duration(milliseconds: transitionDuration),
+      handler: Handler(handlerFunc: (context, params) {
+        int id = 0;
+
+        if (params['id'] != null) {
+          id = int.parse(params['id']!.first);
+        }
+
+        return AddCardScreen(id: id);
+      }),
+    );
+}

@@ -1,28 +1,31 @@
-import 'package:etiqa/features/add_card/add_cart.dart';
+import 'package:etiqa/features/detail/detail.dart';
 import 'package:etiqa/features/home/home.dart';
 import 'package:etiqa/models/data_model.dart';
+import 'package:etiqa/widgets/fields/calendar_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class UserProvider extends ChangeNotifier {
-  late TodoModel _dataDetail;
+  TodoModel _dataDetail = TodoModel(id: 0);
   TodoModel get dataDetail => _dataDetail;
   set dataDetail(TodoModel val) {
     _dataDetail = val;
     notifyListeners();
   }
 
-  List<TodoModel> _datas = dataTodo;
+  List<TodoModel> _datas = [];
   List<TodoModel> get datas => _datas;
   set datas(List<TodoModel> val) {
     datas = val;
     notifyListeners();
   }
 
+  // this function is tick the check of cemplete whether true and false
   void completedCheck(bool? val, int id) {
     datas.firstWhere((e) => e.id == id).completed = val;
   }
 
+  //this function is handling the creation and update the existed data.
   Future<void> addCard(BuildContext context,
       List<TextEditingController> controllers, int id) async {
     if (id == 0) {
@@ -31,32 +34,51 @@ class UserProvider extends ChangeNotifier {
           title: controllers[0].text,
           status: 0,
           completed: false,
-          startDate: DateTime.parse(controllers[1].text),
-          endDate: DateTime.parse(controllers[2].text),
+          startDate: DateFormat('dd MMM yyyy').parse(controllers[1].text),
+          endDate: DateFormat('dd MMM yyyy').parse(controllers[2].text),
           timeLeft: 0));
     } else {
       dataDetail = dataTodo.firstWhere((e) => e.id == id);
       dataDetail.title = controllers[0].text;
-      dataDetail.startDate = DateTime.parse(controllers[1].text);
-      dataDetail.endDate = DateTime.parse(controllers[2].text);
+      dataDetail.startDate =
+          DateFormat('dd MMM yyyy').parse(controllers[1].text);
+      dataDetail.endDate = DateFormat('dd MMM yyyy').parse(controllers[2].text);
     }
 
+    //If successfully, then navigate back to the main screen.
     Navigator.of(context).pushNamedAndRemoveUntil(
-        LandingScreen.routeName, (Route<dynamic> route) => false);
+        HomeScreen.routeName, (Route<dynamic> route) => false);
   }
 
+  // This function is that the user is allowed to create the new card
   Future<void> createCard(BuildContext context) async {
     _dataDetail = TodoModel(id: 0);
     dataDetail = _dataDetail;
     Navigator.of(context).pushNamed(AddCardScreen.routeName);
   }
 
+//Select the card to display the detail from the list
   Future<void> openDetail(BuildContext context, int id) async {
-    _dataDetail = datas.firstWhere((e) => e.id == id);
+    if (id > 0) {
+      _dataDetail = datas.firstWhere((e) => e.id == id);
+    } else {
+      _dataDetail = TodoModel(id: 0);
+    }
     dataDetail = _dataDetail;
+
     Navigator.of(context).pushNamed(AddCardScreen.routeName);
   }
 
+//Select the card to display the detail from the list
+  TodoModel getDetail(int? id) {
+    if (id != null) {
+      _dataDetail = datas.firstWhere((e) => e.id == id);
+      dataDetail = _dataDetail;
+    }
+    return dataDetail;
+  }
+
+//This function is that open the calendar from the icon calendar field
   setDatePicker(BuildContext context, TextEditingController? controller,
       Function(String)? onChange) async {
     DateTime? pickedDate = await showDatePicker(
@@ -77,8 +99,7 @@ class UserProvider extends ChangeNotifier {
     );
 
     if (pickedDate != null) {
-      String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-      controller!.text = formattedDate;
+      controller!.text = formatDate(pickedDate);
     }
   }
 }

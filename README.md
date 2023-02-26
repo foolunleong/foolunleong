@@ -1,16 +1,9 @@
 # etiqa
 
-A new Flutter project.
+I am Foo Lun Leong.
 
-## Getting Started
+This project is that I've built the basic of Etiqa app by performing the functions and unit testing according to the assessements. 
 
-This project is a starting point for a Flutter application.
+What functions in the basic of Etiqa app are navigate route, list of To-Do card, create/update and select the detail from the list of To-Do card.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+What testing unit in the basic of Etiqa app are performing the functions and widgets.
